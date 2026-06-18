@@ -1,0 +1,14 @@
+# Virtual environment
+.venv/
+venv/
+
+# PyCharm settings
+.idea/
+
+# Python caching
+__pycache__/
+*.py[cod]
+
+# Local SQLite databases
+*.db
+*.sqlite3
