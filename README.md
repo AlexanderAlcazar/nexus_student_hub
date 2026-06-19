@@ -8,10 +8,10 @@ An actively developing, distributed full-stack student management platform. This
 
 The project is currently transitioning through its foundational phases. The core architecture has been organized into modular layers to strictly separate data, user interfaces, and business logic:
 
-- [ ] **Phase 1: Core Models & Shared Data Layer:** Implementing abstract user schemas, student profiles, and administrative privilege roles.
-- [ ] **Phase 2: Database Infrastructure:** Structuring a persistent storage layer utilizing SQLite with dynamic relational tables and auto-incrementing system IDs.
-- [ ] **Phase 3: Server-Side Controllers & Sockets:** Building a custom TCP socket listener paired with server controllers to route incoming network packets and safely execute database queries.
-- [ ] **Phase 4: Client-Side Views & Controllers:** Designing a desktop graphical user interface (GUI) via PyQt6/CustomTkinter that leverages view-controllers to cleanly abstract all network requests away from the user.
+- [ ] **Phase 1 (In Progress): Core Models & Shared Data Layer:** Implementing abstract user schemas, student profiles, and administrative privilege roles.
+- [ ] **Phase 2 (Planned): Database Infrastructure:** Structuring a persistent storage layer utilizing SQLite with dynamic relational tables and auto-incrementing system IDs.
+- [ ] **Phase 3 (Planned): Server-Side Controllers & Sockets:** Building a custom TCP socket listener paired with server controllers to route incoming network packets and safely execute database queries.
+- [ ] **Phase 4 (Planned): Client-Side Views & Controllers:** Designing a desktop graphical user interface (GUI) via PyQt6/CustomTkinter that leverages view-controllers to cleanly abstract all network requests away from the user.
 
 ---
 
