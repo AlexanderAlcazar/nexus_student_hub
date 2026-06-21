@@ -34,11 +34,12 @@ class User(ABC):
         # permissions matrices for UI rendering and server-side request verification.
         pass
 
-    @abstractmethod
+   
     def to_dict(self) -> dict:
-        """
-        Must be overridden to handle network JSON serialization.
-        """
-        # TODO: Implement this in subclasses to map object properties into
-        # a standard dictionary format before transmitting data over TCP sockets.
-        pass
+       return{
+           "user_id": self.user_id,
+           "username": self.username,
+           "email": self.email,
+           "user_type": self.user_type
+
+       }
