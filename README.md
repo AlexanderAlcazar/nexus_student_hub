@@ -8,7 +8,7 @@ An actively developing, distributed full-stack student management platform. This
 
 The project is currently transitioning through its foundational phases. The core architecture has been organized into modular layers to strictly separate data, user interfaces, and business logic:
 
-- [ ] **Phase 1 (In Progress): Core Models & Shared Data Layer:** Implementing abstract user schemas, student profiles, and administrative privilege roles.
+- [ ] **Phase 1 (In Progress): Core Models & Composition Layer:** Design modular, independent component models and implement the composite `Student`, and `Admin` containers.
 - [ ] **Phase 2 (Planned): Database Infrastructure:** Structuring a persistent storage layer utilizing SQLite with dynamic relational tables and auto-incrementing system IDs.
 - [ ] **Phase 3 (Planned): Server-Side Controllers & Sockets:** Building a custom TCP socket listener paired with server controllers to route incoming network packets and safely execute database queries.
 - [ ] **Phase 4 (Planned): Client-Side Views & Controllers:** Designing a desktop graphical user interface (GUI) via PyQt6/CustomTkinter that leverages view-controllers to cleanly abstract all network requests away from the user.
@@ -18,7 +18,7 @@ The project is currently transitioning through its foundational phases. The core
 ## Technical Architecture (MVC Design Pattern)
 
 To guarantee a professional separation of concerns, the repository follows a strict architectural pipeline:
-- **Model (M):** Pure data frameworks that govern entity definitions (`User`, `Student`, `Admin`) without any knowledge of network sockets or user interfaces.
+- **Model (M):** Pure, standalone data frameworks that govern entity definitions. Rather than using rigid inheritance, models are built using **object composition**.
 - **View (V):** Desktop layout view scripts responsible solely for rendering UI elements (buttons, windows, tables) and reporting client-side click events.
 - **Controller (C):** The operational brain divided across the network stream. Client controllers intercept UI interactions to communicate with the server, while server controllers process backend business logic and query the SQLite layer.
 
@@ -40,7 +40,11 @@ Once fully implemented, the platform will support:
 nexus_student_hub/
 │
 ├── src/
-│   ├── models/              # [In Progress] Pure data frameworks (User, Student, Admin blueprints)
+│   ├── models/              # Pure data frameworks and component modules
+│   │   ├── credentials.py       # Independent network auth & identity block
+│   │   ├── personal_details.py  # Human profile metrics (names)
+│   │   ├── contact_info.py      # Physical address and logistics block
+│   │   └── student.py           # Composite Student container model
 │   ├── database/            # [Planned] SQLite engine setups, connection handles, and schemas
 │   │
 │   ├── server/              # Server-Side Backend Ecosystem
