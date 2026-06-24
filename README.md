@@ -45,6 +45,7 @@ nexus_student_hub/
 │   │   ├── personal_details.py  # Human profile metrics (names)
 │   │   ├── contact_info.py      # Physical address and logistics block
 │   │   └── student.py           # Composite Student container model
+│   │   └── administrator.py     # Composite Administrator container model
 │   ├── database/            # [Planned] SQLite engine setups, connection handles, and schemas
 │   │
 │   ├── server/              # Server-Side Backend Ecosystem
