@@ -42,7 +42,7 @@ nexus_student_hub/
 │
 ├── src/
 │   ├── assets/
-│   │   ├── ERD_SCHEMA.png   # Potential ERD for the database 
+│   │   └──  ERD_SCHEMA.png   # Potential ERD for the database 
 │   ├── models/              # Pure data frameworks and component modules
 │   │   ├── credentials.py       # Independent network auth & identity block
 │   │   ├── personal_details.py  # Human profile metrics (names)
@@ -50,7 +50,8 @@ nexus_student_hub/
 │   │   └── student.py           # Composite Student container model
 │   │   └── administrator.py     # Composite Administrator container model
 │   ├── database/            # [Planned] SQLite engine setups, connection handles, and schemas
-│   │
+│   │   └──  schema.sql 
+│   │ 
 │   ├── server/              # Server-Side Backend Ecosystem
 │   │   ├── controllers/     # Backend business logic routers (Auth, CRUD processing)
 │   │   └── main.py          # TCP server socket listener entry point
