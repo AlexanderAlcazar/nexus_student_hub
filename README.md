@@ -10,7 +10,7 @@ The project is currently transitioning through its foundational phases. The core
 
 - [x] **Phase 1 (Completed): Core Models & Composition Layer:** Design modular, independent component models and implement the composite `Student`, and `Admin` containers.
 - [ ] **Phase 2 (In-Progress): Database Infrastructure:** Structuring a persistent storage layer utilizing SQLite with dynamic relational tables and auto-incrementing system IDs.
-![Nexus Student Hub ERD Schema](assets/erd_schema.png)
+![Nexus Student Hub ERD Schema]([assets/erd_schema.png](https://raw.githubusercontent.com/AlexanderAlcazar/nexus_student_hub/refs/heads/master/assets/ERD_SCHEMA.png))
 - [ ] **Phase 3 (Planned): Server-Side Controllers & Sockets:** Building a custom TCP socket listener paired with server controllers to route incoming network packets and safely execute database queries.
 - [ ] **Phase 4 (Planned): Client-Side Views & Controllers:** Designing a desktop graphical user interface (GUI) via PyQt6/CustomTkinter that leverages view-controllers to cleanly abstract all network requests away from the user.
 
