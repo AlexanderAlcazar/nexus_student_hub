@@ -8,8 +8,9 @@ An actively developing, distributed full-stack student management platform. This
 
 The project is currently transitioning through its foundational phases. The core architecture has been organized into modular layers to strictly separate data, user interfaces, and business logic:
 
-- [ ] **Phase 1 (In Progress): Core Models & Composition Layer:** Design modular, independent component models and implement the composite `Student`, and `Admin` containers.
-- [ ] **Phase 2 (Planned): Database Infrastructure:** Structuring a persistent storage layer utilizing SQLite with dynamic relational tables and auto-incrementing system IDs.
+- [x] **Phase 1 (Completed): Core Models & Composition Layer:** Design modular, independent component models and implement the composite `Student`, and `Admin` containers.
+- [ ] **Phase 2 (In-Progress): Database Infrastructure:** Structuring a persistent storage layer utilizing SQLite with dynamic relational tables and auto-incrementing system IDs.
+![Nexus Student Hub ERD Schema](assets/erd_schema.png)
 - [ ] **Phase 3 (Planned): Server-Side Controllers & Sockets:** Building a custom TCP socket listener paired with server controllers to route incoming network packets and safely execute database queries.
 - [ ] **Phase 4 (Planned): Client-Side Views & Controllers:** Designing a desktop graphical user interface (GUI) via PyQt6/CustomTkinter that leverages view-controllers to cleanly abstract all network requests away from the user.
 
@@ -40,6 +41,8 @@ Once fully implemented, the platform will support:
 nexus_student_hub/
 │
 ├── src/
+│   ├── assets/
+│   │   ├── ERD_SCHEMA.png   # Potential ERD for the database 
 │   ├── models/              # Pure data frameworks and component modules
 │   │   ├── credentials.py       # Independent network auth & identity block
 │   │   ├── personal_details.py  # Human profile metrics (names)
