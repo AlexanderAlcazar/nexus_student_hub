@@ -1,5 +1,5 @@
 import unittest
-from models.personal_details import PersonalDetails
+
 
 class TestPersonalDetails(unittest.TestCase):
 
