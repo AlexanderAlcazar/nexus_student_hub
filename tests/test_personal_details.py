@@ -1,6 +1,4 @@
 import unittest
-
-from models import personal_details
 from models.personal_details import PersonalDetails
 
 class TestPersonalDetails(unittest.TestCase):
