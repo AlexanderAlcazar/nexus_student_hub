@@ -6,8 +6,14 @@ from typing import Any, Dict, List, Optional, Tuple
 class Database:
 
     def __init__(self, db_name: str = "nexus.db"):
+        # Use the repository-level data directory (relative to process CWD)
+        data_dir = os.path.abspath("data")
+        os.makedirs(data_dir, exist_ok=True)
+        if os.path.isabs(db_name):
+            self.db_path = db_name
+        else:
+            self.db_path = os.path.join(data_dir, db_name)
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.db_path = os.path.join(base_dir, db_name)
         self.schema_path = os.path.join(base_dir, "schema.sql")
 
     def get_connection(self) -> sqlite3.Connection:
