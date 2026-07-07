@@ -9,7 +9,7 @@ An actively developing, distributed full-stack student management platform. This
 The project is currently transitioning through its foundational phases. The core architecture has been organized into modular layers to strictly separate data, user interfaces, and business logic:
 
 - [x] **Phase 1 (Completed): Core Models & Composition Layer:** Design modular, independent component models and implement the composite `Student`, and `Admin` containers.
-- [ ] **Phase 2 (In-Progress): Database Infrastructure:** Structuring a persistent storage layer utilizing SQLite with dynamic relational tables and auto-incrementing system IDs.
+- [ ] **Phase 2 (Testing-Pending): Database Infrastructure:** Database manager module completed with SQLite schema and CRUD operations; pending comprehensive unit test coverage.
 ![Nexus Student Hub ERD Schema](https://raw.githubusercontent.com/AlexanderAlcazar/nexus_student_hub/refs/heads/master/assets/ERD_SCHEMA.png)
 - [ ] **Phase 3 (Planned): Server-Side Controllers & Sockets:** Building a custom TCP socket listener paired with server controllers to route incoming network packets and safely execute database queries.
 - [ ] **Phase 4 (Planned): Client-Side Views & Controllers:** Designing a desktop graphical user interface (GUI) via PyQt6/CustomTkinter that leverages view-controllers to cleanly abstract all network requests away from the user.
@@ -49,8 +49,9 @@ nexus_student_hub/
 │   │   ├── contact_info.py      # Physical address and logistics block
 │   │   └── student.py           # Composite Student container model
 │   │   └── administrator.py     # Composite Administrator container model
-│   ├── database/            # [Planned] SQLite engine setups, connection handles, and schemas
-│   │   └──  schema.sql 
+│   ├── database/            # SQLite database management layer
+│   │   ├── database_manager.py  # CRUD operations handler
+│   │   └── schema.sql           # Database schema definition
 │   │ 
 │   ├── server/              # Server-Side Backend Ecosystem
 │   │   ├── controllers/     # Backend business logic routers (Auth, CRUD processing)
@@ -60,6 +61,12 @@ nexus_student_hub/
 │       ├── controllers/     # View-controllers bridging GUI clicks to network channels
 │       ├── views/           # Graphical user interface layouts and widgets
 │       └── main.py          # Desktop application bootstrap entry point
+│
+├── tests/                   # Unit test suite
+│   ├── test_credentials.py      # Credentials model tests
+│   ├── test_personal_details.py # Personal details model tests
+│   ├── test_contact_info.py     # Contact info model tests
+│   └── test_student.py          # Student model tests
 │
 ├── requirements.txt         # Third-party application requirements (e.g., PyQt6)
 └── README.md                # Technical overview documentation
