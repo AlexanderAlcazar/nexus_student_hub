@@ -11,6 +11,7 @@ class TestContactInfo(unittest.TestCase):
         self.assertIsNone(contact_info.city)
         self.assertIsNone(contact_info.state)
         self.assertIsNone(contact_info.zip_code)
+        print("Default ContactInfo test passed.")
 
     def test_contact_with_arguments(self):
         phone_number = "80555221629"
@@ -30,6 +31,7 @@ class TestContactInfo(unittest.TestCase):
         self.assertEqual(contact_info.city, city)
         self.assertEqual(contact_info.state, state)
         self.assertEqual(contact_info.zip_code, zip_code)
+        print("ContactInfo with arguments test passed.")
 
     def test_to_dict(self):
         phone_number = "80555221629"
@@ -52,4 +54,5 @@ class TestContactInfo(unittest.TestCase):
             "zip_code": zip_code
         }
         self.assertEqual(contact_info.to_dict(), expected_dict)
+        print("ContactInfo to_dict test passed.")
 

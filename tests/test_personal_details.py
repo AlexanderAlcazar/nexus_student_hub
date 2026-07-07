@@ -7,6 +7,7 @@ class TestPersonalDetails(unittest.TestCase):
         personal_details = PersonalDetails()
         self.assertIsNone(personal_details.first_name)
         self.assertIsNone(personal_details.last_name)
+        print("Default PersonalDetails test passed.")
 
     def test_personal_with_arguments(self):
         first_name = "John"
@@ -17,6 +18,7 @@ class TestPersonalDetails(unittest.TestCase):
         )
         self.assertEqual(personal_details.first_name, first_name)
         self.assertEqual(personal_details.last_name, last_name)
+        print("PersonalDetails with arguments test passed.")
 
     def test_to_dict(self):
         first_name = "John"
@@ -30,4 +32,5 @@ class TestPersonalDetails(unittest.TestCase):
             "last_name": last_name
         }
         self.assertEqual(personal_details.to_dict(), expected_dict)
+        print("PersonalDetails to_dict test passed.")
 
