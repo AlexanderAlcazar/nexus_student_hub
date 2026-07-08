@@ -72,6 +72,16 @@ class TestStudent(unittest.TestCase):
         self.assertEqual(student.credentials.password_hash, credentials["password_hash"])
         print("Student with arguments test passed.")
 
+    def test_get_role_permissions(self):
+        student = Student()
+        expected_permissions = {
+            "can_view_grades": True,
+            "can_edit_profiles": True,
+            "can_delete_users": False
+        }
+        self.assertEqual(student.get_role_permissions(), expected_permissions)
+        print("Student get_role_permissions test passed.")
+
     def test_to_dict(self):
         student_id = 1
         major = "Computer Science"
