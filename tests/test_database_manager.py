@@ -8,7 +8,7 @@ class TestDatabaseManager(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.db_path = os.path.join(self.temp_dir.name, "test.db")
-        self.db = Database(self.db_path)
+        self.db = Database(db_name="test.db", data_dir=self.temp_dir.name)
         self.db.initialize_database()
 
     def tearDown(self):
@@ -27,6 +27,7 @@ class TestDatabaseManager(unittest.TestCase):
         # Use context manager or close conn explicitly so SQLite releases the file handle
         with self.db.get_connection() as conn:
             self.assertIsNotNone(conn)
+        self.assertEqual(self.db.db_path, self.db_path)
 
     def test_initialize_database(self):
         # 1. Verify the database file exists on disk

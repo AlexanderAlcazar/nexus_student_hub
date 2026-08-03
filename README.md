@@ -22,6 +22,7 @@ To guarantee a professional separation of concerns, the repository follows a str
 - **Model (M):** Pure, standalone data frameworks that govern entity definitions. Rather than using rigid inheritance, models are built using **object composition**.
 - **View (V):** Desktop layout view scripts responsible solely for rendering UI elements (buttons, windows, tables) and reporting client-side click events.
 - **Controller (C):** The operational brain divided across the network stream. Client controllers intercept UI interactions to communicate with the server, while server controllers process backend business logic and query the SQLite layer.
+- **Composition Root / DI:** A central bootstrap module constructs shared dependencies once and injects them into services, controllers, and entry points.
 
 ---
 
@@ -52,7 +53,9 @@ nexus_student_hub/
 │   ├── database/            # SQLite database management layer
 │   │   ├── database_manager.py  # CRUD operations handler
 │   │   └── schema.sql           # Database schema definition
-│   │ 
+│   ├── container.py          # Application composition root and dependency wiring
+│   ├── repositories/         # Data-access layer built around injected dependencies
+│   │   └── student_repository.py
 │   ├── server/              # Server-Side Backend Ecosystem
 │   │   ├── controllers/     # Backend business logic routers (Auth, CRUD processing)
 │   │   └── main.py          # TCP server socket listener entry point
@@ -66,7 +69,9 @@ nexus_student_hub/
 │   ├── test_credentials.py      # Credentials model tests
 │   ├── test_personal_details.py # Personal details model tests
 │   ├── test_contact_info.py     # Contact info model tests
-│   └── test_student.py          # Student model tests
+│   ├── test_student.py          # Student model tests
+│   ├── test_database_manager.py # Database manager tests
+│   └── test_container.py        # Composition root / DI tests
 │
 ├── requirements.txt         # Third-party application requirements (e.g., PyQt6)
 └── README.md                # Technical overview documentation
