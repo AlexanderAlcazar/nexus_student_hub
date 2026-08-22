@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class ContactInfo:
     """
     Represents secondary personal details attached to a system user.
@@ -5,11 +8,11 @@ class ContactInfo:
     """
     def __init__(
         self,
-        phone_number: str = None,
-        street_address: str = None,
-        city: str = None,
-        state: str = None,
-        zip_code: str = None
+        phone_number: Optional[str] = None,
+        street_address: Optional[str] = None,
+        city: Optional[str] = None,
+        state: Optional[str] = None,
+        zip_code: Optional[str] = None
     ):
         self.phone_number = phone_number
         self.street_address = street_address

@@ -81,5 +81,15 @@ class TestDatabaseManager(unittest.TestCase):
 
 
 
+    def test_initialize_database_raises_when_schema_missing(self):
+        db = Database(
+            db_name="missing_schema.db",
+            data_dir=self.temp_dir.name,
+            schema_path="/nonexistent/path/schema.sql",
+        )
+        with self.assertRaises(FileNotFoundError):
+            db.initialize_database()
+
+
 if __name__ == "__main__":
     unittest.main()
