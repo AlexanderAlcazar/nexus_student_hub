@@ -1,12 +1,15 @@
+from typing import Optional
+
+
 class Credentials:
-    """Handles core network authentication, account identifiers, and system access levels."""
+    """Represents user login and identity data."""
     def __init__(
             self,
-            user_id: int = None,
-            username: str = None,
-            email: str = None,
-            user_type: str = None,
-            password_hash: str = None
+            user_id: Optional[int] = None,
+            username: Optional[str] = None,
+            email: Optional[str] = None,
+            user_type: Optional[str] = None,
+            password_hash: Optional[bytes] = None
     ):
         self.user_id = user_id
         self.username = username

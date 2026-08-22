@@ -59,6 +59,26 @@ class TestDatabaseManager(unittest.TestCase):
                 f"Expected table '{table}' was not found in the database.",
             )
 
+    def test_schema_uses_normalized_role_tables(self):
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+
+            cursor.execute("PRAGMA table_info(students);")
+            student_columns = [row[1] for row in cursor.fetchall()]
+            self.assertEqual(student_columns, ["student_id", "user_id", "major"])
+
+            cursor.execute("PRAGMA table_info(administrators);")
+            admin_columns = [row[1] for row in cursor.fetchall()]
+            self.assertEqual(admin_columns, ["admin_id", "user_id"])
+
+            cursor.execute("PRAGMA index_list(students);")
+            student_indexes = cursor.fetchall()
+            self.assertTrue(any(row[2] for row in student_indexes), "students.user_id should be unique")
+
+            cursor.execute("PRAGMA index_list(administrators);")
+            admin_indexes = cursor.fetchall()
+            self.assertTrue(any(row[2] for row in admin_indexes), "administrators.user_id should be unique")
+
 
 
 if __name__ == "__main__":

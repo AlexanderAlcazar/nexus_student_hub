@@ -14,7 +14,17 @@ class TestContainer(unittest.TestCase):
             self.assertEqual(container.database.db_path, os.path.join(temp_dir, "container.db"))
             self.assertTrue(container.database.schema_path.endswith("schema.sql"))
             container.database.initialize_database()
-            self.assertEqual(container.student_repository.list_students(), [])
+            created_user = container.auth_service.register_user(
+                username="jdoe",
+                email="jdoe@example.com",
+                password="secret123",
+                user_type="student",
+            )
+            self.assertEqual(created_user["username"], "jdoe")
+            self.assertIsNone(container.auth_service.authenticate("jdoe", "wrong"))
+            authenticated_user = container.auth_service.authenticate("jdoe", "secret123")
+            self.assertIsNotNone(authenticated_user)
+            self.assertNotIn("password_hash", authenticated_user)
 
 
 if __name__ == "__main__":

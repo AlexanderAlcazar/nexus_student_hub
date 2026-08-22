@@ -1,23 +1,28 @@
+from typing import Optional
+
+from models.contact_info import ContactInfo
 from models.credentials import Credentials
 from models.personal_details import PersonalDetails
-from models.contact_info import ContactInfo
+from models.user_base import UserBase
 
-class Student():
+class Student(UserBase):
 
     def __init__(
         self,
-        student_id: int = None,
-        major: str = None,
-        personal_details: PersonalDetails = None,
-        contact_info: ContactInfo = None,
-        credentials: Credentials = None
+        student_id: Optional[int] = None,
+        major: Optional[str] = None,
+        personal_details: Optional[PersonalDetails] = None,
+        contact_info: Optional[ContactInfo] = None,
+        credentials: Optional[Credentials] = None
 
     ):
         self.student_id = student_id
         self.major = major
-        self.personal_details = personal_details if personal_details is not None else PersonalDetails()
-        self.contact_info = contact_info if contact_info is not None else ContactInfo()
-        self.credentials = credentials if credentials is not None else Credentials()
+        super().__init__(
+            personal_details=personal_details,
+            contact_info=contact_info,
+            credentials=credentials,
+        )
 
     def get_role_permissions(self) -> dict:
         return {
@@ -26,11 +31,9 @@ class Student():
             "can_delete_users": False  # Absolutely not!
         }
     def to_dict(self) -> dict:
-        data = {
+        data = super().to_dict()
+        data.update({
             "student_id": self.student_id,
-            "major": self.major
-        }
-        data.update(self.personal_details.to_dict())
-        data.update(self.contact_info.to_dict())
-        data.update(self.credentials.to_dict())
+            "major": self.major,
+        })
         return data

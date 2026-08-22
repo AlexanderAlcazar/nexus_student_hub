@@ -47,15 +47,13 @@ CREATE TABLE IF NOT EXISTS contact_info (
 -- Isolated profile buckets used to determine dashboard privileges and layouts.
 CREATE TABLE IF NOT EXISTS students (
     student_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL UNIQUE,
     major TEXT,
-    can_view_grades BOOLEAN DEFAULT 1, -- 1 acts as True in SQLite
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS administrators (
     admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    can_delete_users BOOLEAN DEFAULT 1,
+    user_id INTEGER NOT NULL UNIQUE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );

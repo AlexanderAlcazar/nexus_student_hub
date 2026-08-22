@@ -1,77 +1,85 @@
-# Nexus Student Hub (In Progress)
+# Nexus Student Hub
 
-An actively developing, distributed full-stack student management platform. This project represents a modern rewrite and architectural migration from a previous Java implementation into a streamlined Python ecosystem, introducing a decoupled Model-View-Controller (MVC) architecture, a centralized TCP socket server, and a persistent SQLite database layer.
+Backend foundation for a future client-server student hub with a GUI.
 
----
+## Current focus
 
-## Current Project Status & Roadmap
+The project is currently centered on authentication and data modeling:
 
-The project is currently transitioning through its foundational phases. The core architecture has been organized into modular layers to strictly separate data, user interfaces, and business logic:
+- SQLite-backed user storage
+- password hashing and login verification
+- shared user profile composition
+- separate student and administrator role records
+- dependency injection via a simple application container
 
-- [x] **Phase 1 (Completed): Core Models & Composition Layer:** Design modular, independent component models and implement the composite `Student`, and `Admin` containers.
-- [ ] **Phase 2 (Testing-Pending): Database Infrastructure:** Database manager module completed with SQLite schema and CRUD operations; pending comprehensive unit test coverage.
-![Nexus Student Hub ERD Schema](https://raw.githubusercontent.com/AlexanderAlcazar/nexus_student_hub/refs/heads/master/assets/ERD_SCHEMA.png)
-- [ ] **Phase 3 (Planned): Server-Side Controllers & Sockets:** Building a custom TCP socket listener paired with server controllers to route incoming network packets and safely execute database queries.
-- [ ] **Phase 4 (Planned): Client-Side Views & Controllers:** Designing a desktop graphical user interface (GUI) via PyQt6/CustomTkinter that leverages view-controllers to cleanly abstract all network requests away from the user.
+## What is implemented
 
----
+- `AuthService` for register/login flows
+- `UserRepository` for users table access
+- `Database` wrapper for SQLite connections and schema loading
+- normalized schema with:
+  - `users`
+  - `personal_details`
+  - `contact_info`
+  - `students`
+  - `administrators`
+- reusable model components:
+  - `Credentials`
+  - `PersonalDetails`
+  - `ContactInfo`
+  - `UserBase`
+  - `Student`
+  - `Administrator`
 
-## Technical Architecture (MVC Design Pattern)
+## Architecture
 
-To guarantee a professional separation of concerns, the repository follows a strict architectural pipeline:
-- **Model (M):** Pure, standalone data frameworks that govern entity definitions. Rather than using rigid inheritance, models are built using **object composition**.
-- **View (V):** Desktop layout view scripts responsible solely for rendering UI elements (buttons, windows, tables) and reporting client-side click events.
-- **Controller (C):** The operational brain divided across the network stream. Client controllers intercept UI interactions to communicate with the server, while server controllers process backend business logic and query the SQLite layer.
-- **Composition Root / DI:** A central bootstrap module constructs shared dependencies once and injects them into services, controllers, and entry points.
+The codebase is organized as a small backend-first application:
 
----
+- `src/database/` for persistence and schema
+- `src/repositories/` for database access
+- `src/services/` for business logic
+- `src/models/` for domain data objects
+- `src/container.py` for dependency wiring
 
-## Technical Overview
+The current backend is designed to stay stateless so it can later support multiple users and request handling safely.
 
-Once fully implemented, the platform will support:
-- **User Authentication:** Isolated validation pathways distinguishing between administrative privilege configurations and read-only student system states.
-- **Academic Record Tracking:** Complete CRUD capabilities (Create, Read, Update, Delete) allowing administrators to inject new records, remove students by system IDs, or pull structural student rosters.
-- **Data Serialization:** Automatic, corruption-free binary serialization directly onto disk storage via SQLite.
-- **Relational Domain Integrity:** Integrated structural boundaries to prevent desynchronized data states across multi-user environments.
-
----
-
-## Project Structure
+## Project structure
 
 ```text
 nexus_student_hub/
-│
 ├── src/
-│   ├── assets/
-│   │   └──  ERD_SCHEMA.png   # Potential ERD for the database 
-│   ├── models/              # Pure data frameworks and component modules
-│   │   ├── credentials.py       # Independent network auth & identity block
-│   │   ├── personal_details.py  # Human profile metrics (names)
-│   │   ├── contact_info.py      # Physical address and logistics block
-│   │   └── student.py           # Composite Student container model
-│   │   └── administrator.py     # Composite Administrator container model
-│   ├── database/            # SQLite database management layer
-│   │   ├── database_manager.py  # CRUD operations handler
-│   │   └── schema.sql           # Database schema definition
-│   ├── container.py          # Application composition root and dependency wiring
-│   ├── repositories/         # Data-access layer built around injected dependencies
-│   │   └── student_repository.py
-│   ├── server/              # Server-Side Backend Ecosystem
-│   │   ├── controllers/     # Backend business logic routers (Auth, CRUD processing)
-│   │   └── main.py          # TCP server socket listener entry point
-│   │
-│   └── client/              # Client-Side Frontend Ecosystem
-│       ├── controllers/     # View-controllers bridging GUI clicks to network channels
-│       ├── views/           # Graphical user interface layouts and widgets
-│       └── main.py          # Desktop application bootstrap entry point
-│
-├── tests/                   # Unit test suite
-│   ├── test_credentials.py      # Credentials model tests
-│   ├── test_personal_details.py # Personal details model tests
-│   ├── test_contact_info.py     # Contact info model tests
-│   ├── test_student.py          # Student model tests
-│   ├── test_database_manager.py # Database manager tests
-│   └── test_container.py        # Composition root / DI tests
-│
-├── requirements.txt         # Third-party application requirements (e.g., PyQt6)
-└── README.md                # Technical overview documentation
+│   ├── container.py
+│   ├── database/
+│   │   ├── database_manager.py
+│   │   └── schema.sql
+│   ├── models/
+│   │   ├── credentials.py
+│   │   ├── personal_details.py
+│   │   ├── contact_info.py
+│   │   ├── user_base.py
+│   │   ├── student.py
+│   │   └── administrator.py
+│   ├── repositories/
+│   │   └── user_repository.py
+│   └── services/
+│       └── auth_service.py
+├── tests/
+└── README.md
+```
+
+## Running tests
+
+The project expects `src` on `PYTHONPATH`:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m unittest discover -s tests
+```
+
+## Roadmap
+
+- add server request handling
+- add client UI scaffolding
+- add session/token handling
+- expand repositories for student and administrator workflows
+- replace SQLite with a server-grade database if concurrency demands grow

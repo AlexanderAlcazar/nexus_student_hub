@@ -3,7 +3,8 @@ from functools import cached_property
 from typing import Optional
 
 from database.database_manager import Database
-from repositories.student_repository import StudentRepository
+from repositories.user_repository import UserRepository
+from services.auth_service import AuthService
 
 
 @dataclass(frozen=True)
@@ -26,8 +27,12 @@ class ApplicationContainer:
         )
 
     @cached_property
-    def student_repository(self) -> StudentRepository:
-        return StudentRepository(self.database)
+    def user_repository(self) -> UserRepository:
+        return UserRepository(self.database)
+
+    @cached_property
+    def auth_service(self) -> AuthService:
+        return AuthService(self.user_repository)
 
 
 def build_container(settings: Optional[AppSettings] = None) -> ApplicationContainer:

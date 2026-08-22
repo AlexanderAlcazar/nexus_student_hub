@@ -17,7 +17,7 @@ class TestCredentials(unittest.TestCase):
         username = "testuser"
         emai = "testuser@email.com"
         user_type = "admin"
-        password_hash = "hashed_password"
+        password_hash = b"hashed_password"
         credentials = Credentials(
             user_id=user_id,
             username=username,
@@ -37,7 +37,7 @@ class TestCredentials(unittest.TestCase):
         username = "testuser"
         emai = "testuser@email.com"
         user_type = "admin"
-        password_hash = "hashed_password"
+        password_hash = b"hashed_password"
         credentials = Credentials(
             user_id=user_id,
             username=username,
@@ -53,7 +53,6 @@ class TestCredentials(unittest.TestCase):
         }
         self.assertEqual(credentials.to_dict(), expected_dict)
         print("Credentials to_dict test passed.")
-
 
 
 
