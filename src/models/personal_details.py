@@ -1,6 +1,9 @@
+from typing import Optional
+
+
 class PersonalDetails:
     """Handles real-world human identity metrics."""
-    def __init__(self, first_name: str = None, last_name: str = None):
+    def __init__(self, first_name: Optional[str] = None, last_name: Optional[str] = None):
         self.first_name = first_name
         self.last_name = last_name
 

@@ -44,8 +44,7 @@ class Database:
 
     def initialize_database(self) -> None:
         if not os.path.exists(self.schema_path):
-            print("Schema file not found")
-            return
+            raise FileNotFoundError(f"Schema file not found: {self.schema_path}")
 
         print("Day 1 launch: Database being created")
 
@@ -73,12 +72,8 @@ class Database:
             return dict(db_row) if db_row else None
 
     def execute_write(self, sql_string: str, params: Tuple[Any, ...] = ()) -> bool:
-        try:
-            with closing(self.get_connection()) as conn:
-                cursor = conn.cursor()
-                cursor.execute(sql_string, params)
-                conn.commit()
-            return True
-        except sqlite3.Error as e:
-            print(f"Write error: {e}")
-            return False
+        with closing(self.get_connection()) as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql_string, params)
+            conn.commit()
+        return True

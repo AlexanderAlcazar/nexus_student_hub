@@ -19,8 +19,7 @@ class UserRepository:
                 (username, email, password_hash, user_type),
             )
             conn.commit()
-
-        created_user_id = cursor.lastrowid
+            created_user_id = cursor.lastrowid
         created_user = self.get_user_by_id(created_user_id)
         if created_user is None:
             raise RuntimeError("User creation succeeded but the new user could not be loaded.")
