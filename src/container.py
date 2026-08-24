@@ -5,6 +5,7 @@ from typing import Optional
 from database.database_manager import Database
 from repositories.user_repository import UserRepository
 from services.auth_service import AuthService
+from services.profile_service import ProfileService
 
 
 @dataclass(frozen=True)
@@ -33,6 +34,10 @@ class ApplicationContainer:
     @cached_property
     def auth_service(self) -> AuthService:
         return AuthService(self.user_repository)
+
+    @cached_property
+    def profile_service(self) -> ProfileService:
+        return ProfileService(self.user_repository)
 
 
 def build_container(settings: Optional[AppSettings] = None) -> ApplicationContainer:
