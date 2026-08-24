@@ -4,18 +4,21 @@ Backend foundation for a future client-server student hub with a GUI.
 
 ## Current focus
 
-The project is currently centered on authentication and data modeling:
+The project is currently centered on authentication, normalized user data, and profile completion:
 
 - SQLite-backed user storage
 - password hashing and login verification
 - shared user profile composition
+- profile completion for personal details and contact info
+- student major persistence
 - separate student and administrator role records
 - dependency injection via a simple application container
 
 ## What is implemented
 
-- `AuthService` for register/login flows
-- `UserRepository` for users table access
+- `AuthService` for register/login flows and profile completion
+- `ProfileService` for completing a user profile after account creation
+- `UserRepository` for user and profile table access
 - `Database` wrapper for SQLite connections and schema loading
 - normalized schema with:
   - `users`
@@ -30,6 +33,7 @@ The project is currently centered on authentication and data modeling:
   - `UserBase`
   - `Student`
   - `Administrator`
+- repository support for upserting profile data by `user_id`
 
 ## Architecture
 
@@ -37,7 +41,7 @@ The codebase is organized as a small backend-first application:
 
 - `src/database/` for persistence and schema
 - `src/repositories/` for database access
-- `src/services/` for business logic
+- `src/services/` for business logic and profile workflows
 - `src/models/` for domain data objects
 - `src/container.py` for dependency wiring
 
@@ -62,9 +66,22 @@ nexus_student_hub/
 │   ├── repositories/
 │   │   └── user_repository.py
 │   └── services/
-│       └── auth_service.py
+│       ├── auth_service.py
+│       └── profile_service.py
 ├── tests/
-└── README.md
+│   ├── test_profile_completion.py
+│   ├── test_container.py
+│   ├── test_student.py
+│   ├── test_administrator.py
+│   ├── test_user_base.py
+│   ├── test_personal_details.py
+│   ├── test_contact_info.py
+│   ├── test_credentials.py
+│   └── test_database_manager.py
+├── data/
+├── assets/
+├── README.md
+└── .gitignore
 ```
 
 ## Running tests
@@ -82,4 +99,5 @@ python -m unittest discover -s tests
 - add client UI scaffolding
 - add session/token handling
 - expand repositories for student and administrator workflows
+- add profile editing APIs and validation rules
 - replace SQLite with a server-grade database if concurrency demands grow
