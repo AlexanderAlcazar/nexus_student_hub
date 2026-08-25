@@ -99,11 +99,11 @@ nexus_student_hub/
 
 ## Running the API
 
-From the project root:
+From the project root, with the virtual environment activated:
 
 ```powershell
 $env:PYTHONPATH = "src"
-.\.venv\Scripts\python.exe -m uvicorn server.app:app --reload
+uvicorn server.app:app --reload
 ```
 
 Then open:
