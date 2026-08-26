@@ -1,4 +1,3 @@
-from contextlib import closing
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
@@ -10,17 +9,18 @@ class UserRepository:
         self.database = database
 
     def create_user(self, username: str, email: str, password_hash: bytes, user_type: str) -> Dict[str, Any]:
-        with closing(self.database.get_connection()) as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                """
-                INSERT INTO users (username, email, password_hash, user_type)
-                VALUES (?, ?, ?, ?)
-                """,
-                (username, email, password_hash, user_type),
-            )
+        with self.database.get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO users (username, email, password_hash, user_type)
+                    VALUES (%s, %s, %s, %s)
+                    RETURNING user_id
+                    """,
+                    (username, email, password_hash, user_type),
+                )
+                created_user_id = cursor.fetchone()[0]
             conn.commit()
-            created_user_id = cursor.lastrowid
         created_user = self.get_user_by_id(created_user_id)
         if created_user is None:
             raise RuntimeError("User creation succeeded but the new user could not be loaded.")
@@ -31,7 +31,7 @@ class UserRepository:
             """
             SELECT user_id, username, email, password_hash, user_type, created_at
             FROM users
-            WHERE user_id = ?
+            WHERE user_id = %s
             """,
             (user_id,),
         )
@@ -41,7 +41,7 @@ class UserRepository:
             """
             SELECT user_id, username, email, password_hash, user_type, created_at
             FROM users
-            WHERE username = ?
+            WHERE username = %s
             """,
             (username,),
         )
@@ -51,7 +51,7 @@ class UserRepository:
             """
             SELECT user_id, username, email, password_hash, user_type, created_at
             FROM users
-            WHERE email = ?
+            WHERE email = %s
             """,
             (email,),
         )
@@ -61,21 +61,24 @@ class UserRepository:
             """
             SELECT user_id, first_name, last_name
             FROM personal_details
-            WHERE user_id = ?
+            WHERE user_id = %s
             """,
             (user_id,),
         )
 
     def save_personal_details(self, user_id: int, first_name: Optional[str] = None, last_name: Optional[str] = None) -> Dict[str, Any]:
-        with closing(self.database.get_connection()) as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                """
-                INSERT OR REPLACE INTO personal_details (user_id, first_name, last_name)
-                VALUES (?, ?, ?)
-                """,
-                (user_id, first_name, last_name),
-            )
+        with self.database.get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO personal_details (user_id, first_name, last_name)
+                    VALUES (%s, %s, %s)
+                    ON CONFLICT (user_id) DO UPDATE
+                    SET first_name = EXCLUDED.first_name,
+                        last_name = EXCLUDED.last_name
+                    """,
+                    (user_id, first_name, last_name),
+                )
             conn.commit()
 
         stored = self.get_personal_details(user_id)
@@ -88,7 +91,7 @@ class UserRepository:
             """
             SELECT user_id, phone_number, street_address, city, state, zip_code
             FROM contact_info
-            WHERE user_id = ?
+            WHERE user_id = %s
             """,
             (user_id,),
         )
@@ -102,15 +105,21 @@ class UserRepository:
         state: Optional[str] = None,
         zip_code: Optional[str] = None,
     ) -> Dict[str, Any]:
-        with closing(self.database.get_connection()) as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                """
-                INSERT OR REPLACE INTO contact_info (user_id, phone_number, street_address, city, state, zip_code)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """,
-                (user_id, phone_number, street_address, city, state, zip_code),
-            )
+        with self.database.get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO contact_info (user_id, phone_number, street_address, city, state, zip_code)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (user_id) DO UPDATE
+                    SET phone_number = EXCLUDED.phone_number,
+                        street_address = EXCLUDED.street_address,
+                        city = EXCLUDED.city,
+                        state = EXCLUDED.state,
+                        zip_code = EXCLUDED.zip_code
+                    """,
+                    (user_id, phone_number, street_address, city, state, zip_code),
+                )
             conn.commit()
 
         stored = self.get_contact_info(user_id)
@@ -123,21 +132,23 @@ class UserRepository:
             """
             SELECT user_id, student_id, major
             FROM students
-            WHERE user_id = ?
+            WHERE user_id = %s
             """,
             (user_id,),
         )
 
     def save_student_profile(self, user_id: int, major: Optional[str] = None) -> Dict[str, Any]:
-        with closing(self.database.get_connection()) as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                """
-                INSERT OR REPLACE INTO students (user_id, major)
-                VALUES (?, ?)
-                """,
-                (user_id, major),
-            )
+        with self.database.get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO students (user_id, major)
+                    VALUES (%s, %s)
+                    ON CONFLICT (user_id) DO UPDATE
+                    SET major = EXCLUDED.major
+                    """,
+                    (user_id, major),
+                )
             conn.commit()
 
         stored = self.get_student_profile(user_id)
@@ -168,17 +179,18 @@ class UserRepository:
         return profile
 
     def create_auth_session(self, user_id: int, refresh_token_hash: str, expires_at: datetime) -> Dict[str, Any]:
-        with closing(self.database.get_connection()) as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                """
-                INSERT INTO auth_sessions (user_id, refresh_token_hash, expires_at)
-                VALUES (?, ?, ?)
-                """,
-                (user_id, refresh_token_hash, expires_at.isoformat()),
-            )
+        with self.database.get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO auth_sessions (user_id, refresh_token_hash, expires_at)
+                    VALUES (%s, %s, %s)
+                    RETURNING session_id
+                    """,
+                    (user_id, refresh_token_hash, expires_at),
+                )
+                session_id = cursor.fetchone()[0]
             conn.commit()
-            session_id = cursor.lastrowid
         created = self.get_auth_session_by_id(session_id)
         if created is None:
             raise RuntimeError("Auth session creation succeeded but the session could not be loaded.")
@@ -189,7 +201,7 @@ class UserRepository:
             """
             SELECT session_id, user_id, refresh_token_hash, expires_at, revoked_at, replaced_by_session_id, created_at
             FROM auth_sessions
-            WHERE session_id = ?
+            WHERE session_id = %s
             """,
             (session_id,),
         )
@@ -199,7 +211,7 @@ class UserRepository:
             """
             SELECT session_id, user_id, refresh_token_hash, expires_at, revoked_at, replaced_by_session_id, created_at
             FROM auth_sessions
-            WHERE refresh_token_hash = ?
+            WHERE refresh_token_hash = %s
             """,
             (refresh_token_hash,),
         )
@@ -208,7 +220,11 @@ class UserRepository:
         if session["revoked_at"] is not None:
             return None
 
-        expires_at = datetime.fromisoformat(session["expires_at"])
+        expires_value = session["expires_at"]
+        if isinstance(expires_value, str):
+            expires_at = datetime.fromisoformat(expires_value)
+        else:
+            expires_at = expires_value
         if expires_at <= datetime.now(timezone.utc):
             return None
         return session
@@ -219,15 +235,16 @@ class UserRepository:
         revoked_at: datetime,
         replaced_by_session_id: Optional[int] = None,
     ) -> bool:
-        with closing(self.database.get_connection()) as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                """
-                UPDATE auth_sessions
-                SET revoked_at = ?, replaced_by_session_id = ?
-                WHERE session_id = ? AND revoked_at IS NULL
-                """,
-                (revoked_at.isoformat(), replaced_by_session_id, session_id),
-            )
+        with self.database.get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    """
+                    UPDATE auth_sessions
+                    SET revoked_at = %s, replaced_by_session_id = %s
+                    WHERE session_id = %s AND revoked_at IS NULL
+                    """,
+                    (revoked_at, replaced_by_session_id, session_id),
+                )
+                affected_rows = cursor.rowcount
             conn.commit()
-            return cursor.rowcount > 0
+            return affected_rows > 0

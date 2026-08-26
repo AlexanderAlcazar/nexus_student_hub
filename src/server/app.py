@@ -45,7 +45,6 @@ async def lifespan(app: FastAPI):
 def create_app(settings: Optional[AppSettings] = None) -> FastAPI:
     app = FastAPI(title="Nexus Student Hub API", version="0.1.0", lifespan=lifespan)
     app.state.container = build_container(settings)
-    app.state.container.database.initialize_database()
 
     def get_current_user_from_bearer(
         request: Request,
