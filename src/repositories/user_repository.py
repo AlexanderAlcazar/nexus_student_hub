@@ -1,4 +1,5 @@
 from contextlib import closing
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 from database.database_manager import Database
@@ -165,3 +166,68 @@ class UserRepository:
             profile["major"] = student_profile.get("major")
 
         return profile
+
+    def create_auth_session(self, user_id: int, refresh_token_hash: str, expires_at: datetime) -> Dict[str, Any]:
+        with closing(self.database.get_connection()) as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                INSERT INTO auth_sessions (user_id, refresh_token_hash, expires_at)
+                VALUES (?, ?, ?)
+                """,
+                (user_id, refresh_token_hash, expires_at.isoformat()),
+            )
+            conn.commit()
+            session_id = cursor.lastrowid
+        created = self.get_auth_session_by_id(session_id)
+        if created is None:
+            raise RuntimeError("Auth session creation succeeded but the session could not be loaded.")
+        return created
+
+    def get_auth_session_by_id(self, session_id: int) -> Optional[Dict[str, Any]]:
+        return self.database.fetch_one(
+            """
+            SELECT session_id, user_id, refresh_token_hash, expires_at, revoked_at, replaced_by_session_id, created_at
+            FROM auth_sessions
+            WHERE session_id = ?
+            """,
+            (session_id,),
+        )
+
+    def find_active_auth_session_by_hash(self, refresh_token_hash: str) -> Optional[Dict[str, Any]]:
+        session = self.database.fetch_one(
+            """
+            SELECT session_id, user_id, refresh_token_hash, expires_at, revoked_at, replaced_by_session_id, created_at
+            FROM auth_sessions
+            WHERE refresh_token_hash = ?
+            """,
+            (refresh_token_hash,),
+        )
+        if session is None:
+            return None
+        if session["revoked_at"] is not None:
+            return None
+
+        expires_at = datetime.fromisoformat(session["expires_at"])
+        if expires_at <= datetime.now(timezone.utc):
+            return None
+        return session
+
+    def revoke_auth_session(
+        self,
+        session_id: int,
+        revoked_at: datetime,
+        replaced_by_session_id: Optional[int] = None,
+    ) -> bool:
+        with closing(self.database.get_connection()) as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE auth_sessions
+                SET revoked_at = ?, replaced_by_session_id = ?
+                WHERE session_id = ? AND revoked_at IS NULL
+                """,
+                (revoked_at.isoformat(), replaced_by_session_id, session_id),
+            )
+            conn.commit()
+            return cursor.rowcount > 0

@@ -57,3 +57,19 @@ CREATE TABLE IF NOT EXISTS administrators (
     user_id INTEGER NOT NULL UNIQUE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- ----------------------------------------------------------------------------
+-- 4. AUTH SESSION LAYER
+-- ----------------------------------------------------------------------------
+-- Refresh-token sessions are stored hashed to support secure rotation/revocation.
+CREATE TABLE IF NOT EXISTS auth_sessions (
+    session_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    refresh_token_hash TEXT NOT NULL UNIQUE,
+    expires_at TIMESTAMP NOT NULL,
+    revoked_at TIMESTAMP,
+    replaced_by_session_id INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (replaced_by_session_id) REFERENCES auth_sessions(session_id) ON DELETE SET NULL
+);

@@ -13,6 +13,9 @@ class AppSettings:
     database_name: str = "nexus.db"
     data_dir: Optional[str] = None
     schema_path: Optional[str] = None
+    jwt_secret: str = "dev-only-change-me-at-least-32-bytes-long"
+    jwt_access_ttl_seconds: int = 900
+    jwt_refresh_ttl_seconds: int = 2592000
 
 
 class ApplicationContainer:
@@ -33,7 +36,12 @@ class ApplicationContainer:
 
     @cached_property
     def auth_service(self) -> AuthService:
-        return AuthService(self.user_repository)
+        return AuthService(
+            self.user_repository,
+            jwt_secret=self.settings.jwt_secret,
+            access_ttl_seconds=self.settings.jwt_access_ttl_seconds,
+            refresh_ttl_seconds=self.settings.jwt_refresh_ttl_seconds,
+        )
 
     @cached_property
     def profile_service(self) -> ProfileService:

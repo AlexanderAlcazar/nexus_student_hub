@@ -40,6 +40,9 @@ The project is currently centered on authentication, normalized user data, profi
   - `GET /health`
   - `POST /register`
   - `POST /login`
+  - `POST /token/refresh`
+  - `POST /logout`
+  - `GET /auth/me`
   - `POST /profile/complete`
   - `GET /users/{user_id}`
 
