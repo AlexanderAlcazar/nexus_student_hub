@@ -115,6 +115,20 @@ Then open:
 http://127.0.0.1:8000/health
 ```
 
+## Running the frontend prototype
+
+A React + Vite frontend is available in `frontend/` for visualizing the product flow.
+
+From the project root:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+The Vite dev server runs on `http://127.0.0.1:5173` by default and proxies `/api/*` requests to the backend at `http://127.0.0.1:8000`.
+
 ## Running tests
 
 The project expects `src` on `PYTHONPATH`:
